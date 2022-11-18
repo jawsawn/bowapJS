@@ -14,6 +14,7 @@ let clickedOnScreen = false;
 
 function onLoad() {
     canvas = document.getElementById("maincanvas");
+    document.getElementById("maincanvas").addEventListener("click", onClick);
 
     ctx = canvas.getContext("2d");
     let canvasSize = 800;
@@ -121,11 +122,13 @@ function onLoad() {
     animate()
 }
 
-function onClickCanvas() {
+
+function onClick(e) {
     canvas.style.cursor = "none";
     clickedOnScreen = true;
     canvas.title = "";
 }
+
 
 function trackMouse(e) {
     mouseX = e.clientX - canvas.offsetLeft;
