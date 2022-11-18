@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,16 +8,48 @@
     <title>bowapJS</title>
     <script src="index.js"></script>
     <style>
-        body{
+        body {
             background-color: #222;
-            display: grid;
+            display: flex;
             place-content: center;
         }
+
         #maincanvas {
+            cursor:pointer;
+            
+        }
+
+        .form {
+            background-color: #000;
+            padding: 1rem;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .form input {
+            background-color: #333;
+            color: #FFF;
+        }
+
+        .form label {
+            color: #FFF;
         }
     </style>
 </head>
+
 <body onload="onLoad()">
-    <canvas id="maincanvas" onmousemove="canvasMove(event)"></canvas>
+    <canvas id="maincanvas" onmousemove="trackMouse(event)" onmouseleave="stopTracking()" onclick="onClickCanvas()" title="Click the screen to become Reimu"></canvas>
+
+    <div class="form">
+
+        <label for="tailInput">BoWaP Tails:</label> <br>
+        <input type="number" placeholder="2" value="2" id="tailInput" onchange="handleTail()"> <br>
+
+        <label for="radiusInput">Tail Distance:</label><br>
+        <input type="number" value="0" id="radiusInput" onchange="handleTail()"> <br>
+
+        <label for="gaeInput">Gae Color:</label>
+        <input type="checkbox" id="gaeInput" onchange="handleTail()">
+    </div>
+
 </body>
+
 </html>
