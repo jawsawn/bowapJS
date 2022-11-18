@@ -9,22 +9,28 @@ const grazeAudio = new Audio('graze.mp3');
 let tailCount = 2;
 let radiusDistance = 0;
 let gaeColor = false;
+let becomeMarisa = false;
+
 let hitbox;
 let clickedOnScreen = false;
+let grazeCount = 0;
+let scoreCount = 0;
+let time = 0;
+let gameStarted = false;
+const gameOst = new Audio("satori_midi.mp3");
+gameOst.loop = true;
 
 function onLoad() {
     canvas = document.getElementById("maincanvas");
-    document.getElementById("maincanvas").addEventListener("click", onClick);
+    canvas.addEventListener("click", onClick);
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseleave", onMouseLeave);
 
     ctx = canvas.getContext("2d");
     let canvasSize = 800;
     let canvasOrigin = canvasSize / 2;
     canvas.width = canvasSize;
     canvas.height = canvasSize;
-
-    //background
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvasSize, canvasSize);
 
     class Particle {
         constructor(ox, oy, parent = 0, spin = 0) {
@@ -39,6 +45,7 @@ function onLoad() {
             this.spin = spin;
 
             this.vs = 2;
+            this.grazed = false;
 
             this.parent = parent;
             this.tails = tailCount;
@@ -49,34 +56,48 @@ function onLoad() {
                 this.randomcolor = Math.floor(Math.random() * 360);
                 this.color = `hsl(${this.randomcolor},50%,50%)`;
             }
-            
+
 
         }
 
         draw() {
 
+            //Particle Despawn
             if (this.x > canvas.width || this.x < 0 || this.y > canvas.height || this.y < 0) {
                 //particleArray.splice(particleArray.indexOf(this),1)
                 return;
             }
+
+            //Game Start
             if (clickedOnScreen) {
+                //Grazing
                 if (this.x - this.graze < mouseX && this.x + this.size + this.graze > mouseX && this.y - this.graze < mouseY && this.y + this.size + this.graze > mouseY) {
-                    //console.log("graze")
+                    if (!this.grazed) {
+                        grazeCount++;
+                        document.getElementById("grazeLabel").innerText = grazeCount;
+                        this.grazed = true;
+                    }
                     grazeAudio.play();
+
+                    //Graze Color Handling
                     this.color = `hsl(${this.parent * 20},50%,70%)`
                     if (gaeColor)
-                    this.color = `hsl(${this.randomcolor},50%,70%)`;
+                        this.color = `hsl(${this.randomcolor},50%,70%)`;
                 } else {
+
                     this.color = `hsl(${this.parent * 20},50%,50%)`
                     if (gaeColor)
-                    this.color = `hsl(${this.randomcolor},50%,50%)`;
+                        this.color = `hsl(${this.randomcolor},50%,50%)`;
                 }
-
+                //Death
                 if (this.x < mouseX && this.x + this.size > mouseX && this.y < mouseY && this.y + this.size > mouseY) {
                     deathAudio.play();
+                    time = 0;
+                    scoreCount = 0;
                 }
             }
 
+            //Draw Particles
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.size, this.size);
             let sinF = Math.sin(this.spin / 20) * 50;
@@ -92,7 +113,6 @@ function onLoad() {
                     this.x += this.vs * Math.cos(sinF + ((index + 1) / this.tails) * 2 * Math.PI);
                     this.y += this.vs * Math.sin(sinF + ((index + 1) / this.tails) * 2 * Math.PI);
                 }
-
             }
 
             if (this.parent == 0) {
@@ -112,9 +132,19 @@ function onLoad() {
         ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, canvasSize, canvasSize);
         particleArray.forEach(e => e.draw())
-        if (clickedOnScreen) {
-            ctx.fillStyle = "#F00";
-            ctx.fillRect(mouseX - 1, mouseY - 1, 2, 2);
+        //Draw Character
+        if (gameStarted) {
+            if(becomeMarisa) {
+                ctx.fillStyle = "#FF0";
+                ctx.fillRect(mouseX - 25, mouseY - 25, 50, 50);
+            }
+            if(!becomeMarisa) {
+                ctx.fillStyle = "#F00";
+                ctx.fillRect(mouseX - 1, mouseY - 1, 2, 2);
+            }
+            
+            time++;
+            document.getElementById("scoreLabel").innerText = time * (grazeCount + 1);
         }
     }
 
@@ -125,25 +155,46 @@ function onLoad() {
 
 function onClick(e) {
     canvas.style.cursor = "none";
-    clickedOnScreen = true;
+
     canvas.title = "";
+    gameStarted = true;
+
+    if (!clickedOnScreen) {
+        gameOst.play();
+        document.getElementById("stopMusic").style.visibility = "visible";
+        document.getElementById("stopMusicLabel").style.visibility = "visible";
+
+    }
+    clickedOnScreen = true;
 }
 
-
-function trackMouse(e) {
+function onMouseMove(e) {
     mouseX = e.clientX - canvas.offsetLeft;
     mouseY = e.clientY - canvas.offsetTop;
+    if (clickedOnScreen)
+        gameStarted = true;
 }
 
-function stopTracking() {
+function onMouseLeave() {
     mouseX = -10;
     mouseY = -10;
+    gameStarted = false;
 }
-function handleTail() {
+
+function handleRestart() {
+    gaeColor = document.getElementById("gaeInput").checked;
     tailCount = document.getElementById("tailInput").value;
     radiusDistance = document.getElementById("radiusInput").value;
-    gaeColor = document.getElementById("gaeInput").checked;
+    //Restarts the Game
     cancelAnimationFrame(rafId)
     particleArray = [];
     onLoad()
+}
+
+function handleCosmetic() {
+    if(clickedOnScreen)
+    if (document.getElementById("stopMusic").checked) 
+        gameOst.pause(); else gameOst.play();
+    
+    becomeMarisa = document.getElementById("becomeMarisa").checked;
 }

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BoWaP deez nuts :lesanae:"/>
     <title>bowapJS</title>
     <script src="index.js"></script>
     <style>
@@ -32,22 +33,38 @@
         .form label {
             color: #FFF;
         }
+        .stopMusic  {
+            visibility: hidden;
+        }
+
     </style>
 </head>
 
 <body onload="onLoad()">
-    <canvas id="maincanvas" onmousemove="trackMouse(event)" onmouseleave="stopTracking()" title="Click the screen to become Reimu"></canvas>
+    <canvas id="maincanvas" title="Click the screen to become Reimu"></canvas>
 
     <div class="form">
 
         <label for="tailInput">BoWaP Tails:</label> <br>
-        <input type="number" placeholder="2" value="2" id="tailInput" onchange="handleTail()"> <br>
+        <input type="number" placeholder="2" value="2" id="tailInput" onchange="handleRestart()"> <br>
 
         <label for="radiusInput">Tail Distance:</label><br>
-        <input type="number" value="0" id="radiusInput" onchange="handleTail()"> <br>
+        <input type="number" value="0" id="radiusInput" onchange="handleRestart()"> <br>
 
-        <label for="gaeInput">Gae Color:</label>
-        <input type="checkbox" id="gaeInput" onchange="handleTail()">
+        <label for="gaeInput">Gae Colors:</label>
+        <input type="checkbox" id="gaeInput" onchange="handleRestart()"><br> 
+
+        <label for="becomeMarisa">Become Marisa:</label>
+        <input type="checkbox" id="becomeMarisa" onchange="handleCosmetic()"><br> 
+
+        <label class="stopMusic" for="stopMusic" id="stopMusicLabel">Stop Awful Music:</label>
+        <input class="stopMusic" type="checkbox" id="stopMusic" onchange="handleCosmetic()"><br> <br>
+
+        <label>Score:</label><br>
+        <label id="scoreLabel">00000</label><br><br>
+
+        <label>Graze:</label><br>
+        <label id="grazeLabel">0</label>
     </div>
 
 </body>
