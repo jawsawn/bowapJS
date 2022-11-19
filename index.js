@@ -8,8 +8,12 @@ const deathAudio = new Audio('death.mp3');
 const grazeAudio = new Audio('graze.mp3');
 let tailCount = 2;
 let radiusDistance = 0;
+let speedMult = 200;
+let spinRotat = 2;
+
 let gaeColor = false;
 let becomeMarisa = false;
+let doSafespot = false;
 
 let hitbox;
 let clickedOnScreen = false;
@@ -44,7 +48,7 @@ function onLoad() {
             this.vr = 0.1;
             this.spin = spin;
 
-            this.vs = 2;
+            this.vs = spinRotat;
             this.grazed = false;
 
             this.parent = parent;
@@ -89,18 +93,22 @@ function onLoad() {
                     if (gaeColor)
                         this.color = `hsl(${this.randomcolor},50%,50%)`;
                 }
+
                 //Death
                 if (this.x < mouseX && this.x + this.size > mouseX && this.y < mouseY && this.y + this.size > mouseY) {
-                    deathAudio.play();
-                    time = 0;
-                    scoreCount = 0;
+                    if(!(doSafespot && canvasOrigin-10 < mouseX && canvasOrigin+10 > mouseX && canvasOrigin-10 < mouseY && canvasOrigin+10 > mouseY)) {
+                        deathAudio.play();
+                        time = 0;
+                        scoreCount = 0;
+                    }
+                    
                 }
             }
 
             //Draw Particles
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.size, this.size);
-            let sinF = Math.sin(this.spin / 20) * 50;
+            let sinF = Math.sin(this.spin / 20) * speedMult;
 
             if (this.parent == 0) {
                 this.x = this.ox + this.r * Math.cos(this.spin)
@@ -182,9 +190,15 @@ function onMouseLeave() {
 }
 
 function handleRestart() {
-    gaeColor = document.getElementById("gaeInput").checked;
     tailCount = document.getElementById("tailInput").value;
     radiusDistance = document.getElementById("radiusInput").value;
+    speedMult = document.getElementById("speedMult").value;
+    spinRotat = document.getElementById("spinRotat").value;
+
+
+    gaeColor = document.getElementById("gaeInput").checked;
+    doSafespot = document.getElementById("doSafespot").checked;
+
     //Restarts the Game
     cancelAnimationFrame(rafId)
     particleArray = [];
@@ -197,4 +211,18 @@ function handleCosmetic() {
         gameOst.pause(); else gameOst.play();
     
     becomeMarisa = document.getElementById("becomeMarisa").checked;
+}
+
+function saveCanvas() {      
+        
+        var imageObject = new Image();
+        imageObject.src = canvas.toDataURL("image/png");   
+        
+ 
+        // Saving it locally automatically
+        let link = document.createElement("a");
+        link.setAttribute('download', "bowapJS" + Date.now())
+        link.href= imageObject.src
+        link.click()               
+     
 }
