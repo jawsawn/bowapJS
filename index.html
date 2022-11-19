@@ -78,12 +78,12 @@
             <input type="number" value="200" id="speedMult" onchange="handleRestart()"> <br>
 
             <label for="spinRotat">Spin Rotation Inc:</label><br>
-            <input type="number" value="2" id="spinRotat" onchange="handleRestart()"> <br>
+            <input type="number" value="2" id="spinRotat" onchange="handleRestart()"> <br> <br>
 
             <label for="doSafespot">Safespot:</label>
             <input type="checkbox" id="doSafespot" onchange="handleRestart()"><br>
 
-            <label for="gaeInput">Gae Colors:</label>
+            <label for="gaeInput">Guze Cannon:</label>
             <input type="checkbox" id="gaeInput" onchange="handleRestart()"><br>
 
             <label for="becomeMarisa">Become Marisa:</label>
@@ -91,13 +91,15 @@
 
             <label class="stopMusic" for="stopMusic" id="stopMusicLabel">Stop Awful Music:</label>
             <input class="stopMusic" type="checkbox" id="stopMusic" onchange="handleCosmetic()"><br>
-            <button type="button" id="saveImage" onclick="saveCanvas()">Save Snpshot</button> <br> <br>
+            
+            <button type="button" id="saveImage" onclick="saveCanvas()">Save Screenshot</button> <br> <br>
+            <button type="button" id="shareParams" onclick="shareParams()">Share Parameters</button> <br> <br>
         </div>
         <div>
-            <label>Score:</label><br>
+            <label style="font-size: 1.5rem;">Score:</label><br>
             <label id="scoreLabel">00000</label><br><br>
 
-            <label>Graze:</label><br>
+            <label style="font-size: 1.5rem;">Graze:</label><br>
             <label id="grazeLabel">0</label>
         </div>
         <div>A simulation of border of wave and particle-like spellcards from Touhou. Click the screen to start dodging.

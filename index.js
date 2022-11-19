@@ -6,10 +6,28 @@ let mouseX = -10;
 let mouseY = -10;
 const deathAudio = new Audio('death.mp3');
 const grazeAudio = new Audio('graze.mp3');
+
+const queryString = window.location.search;
+console.log(queryString);
+const urlParams = new URLSearchParams(queryString);
+
 let tailCount = 2;
+if (urlParams.get('p1'))
+    tailCount = urlParams.get('p1');
+
 let radiusDistance = 0;
+if (urlParams.get('p2'))
+    radiusDistance = urlParams.get('p2');
+
 let speedMult = 200;
+if (urlParams.get('p3'))
+    speedMult = urlParams.get('p3');
+
 let spinRotat = 2;
+if (urlParams.get('p4'))
+    spinRotat = urlParams.get('p4');
+
+
 
 let gaeColor = false;
 let becomeMarisa = false;
@@ -24,7 +42,13 @@ let gameStarted = false;
 const gameOst = new Audio("satori_midi.mp3");
 gameOst.loop = true;
 
+
+
 function onLoad() {
+    document.getElementById("tailInput").value = tailCount;
+    document.getElementById("radiusInput").value = radiusDistance;
+    document.getElementById("speedMult").value = speedMult;
+    document.getElementById("spinRotat").value = spinRotat;
     canvas = document.getElementById("maincanvas");
     canvas.addEventListener("click", onClick);
     canvas.addEventListener("mousemove", onMouseMove);
@@ -96,12 +120,12 @@ function onLoad() {
 
                 //Death
                 if (this.x < mouseX && this.x + this.size > mouseX && this.y < mouseY && this.y + this.size > mouseY) {
-                    if(!(doSafespot && canvasOrigin-10 < mouseX && canvasOrigin+10 > mouseX && canvasOrigin-10 < mouseY && canvasOrigin+10 > mouseY)) {
+                    if (!(doSafespot && canvasOrigin - 10 < mouseX && canvasOrigin + 10 > mouseX && canvasOrigin - 10 < mouseY && canvasOrigin + 10 > mouseY)) {
                         deathAudio.play();
                         time = 0;
                         scoreCount = 0;
                     }
-                    
+
                 }
             }
 
@@ -142,15 +166,15 @@ function onLoad() {
         particleArray.forEach(e => e.draw())
         //Draw Character
         if (gameStarted) {
-            if(becomeMarisa) {
+            if (becomeMarisa) {
                 ctx.fillStyle = "#FF0";
                 ctx.fillRect(mouseX - 25, mouseY - 25, 50, 50);
             }
-            if(!becomeMarisa) {
+            if (!becomeMarisa) {
                 ctx.fillStyle = "#F00";
                 ctx.fillRect(mouseX - 1, mouseY - 1, 2, 2);
             }
-            
+
             time++;
             document.getElementById("scoreLabel").innerText = time * (grazeCount + 1);
         }
@@ -195,6 +219,8 @@ function handleRestart() {
     speedMult = document.getElementById("speedMult").value;
     spinRotat = document.getElementById("spinRotat").value;
 
+    window.history.pushState("","",`${window.location.href.split('?')[0]}?p1=${tailCount}&p2=${radiusDistance}&p3=${speedMult}&p4=${spinRotat}`);
+
 
     gaeColor = document.getElementById("gaeInput").checked;
     doSafespot = document.getElementById("doSafespot").checked;
@@ -206,23 +232,30 @@ function handleRestart() {
 }
 
 function handleCosmetic() {
-    if(clickedOnScreen)
-    if (document.getElementById("stopMusic").checked) 
-        gameOst.pause(); else gameOst.play();
-    
+    if (clickedOnScreen)
+        if (document.getElementById("stopMusic").checked)
+            gameOst.pause(); else gameOst.play();
+
     becomeMarisa = document.getElementById("becomeMarisa").checked;
 }
 
-function saveCanvas() {      
-        
-        var imageObject = new Image();
-        imageObject.src = canvas.toDataURL("image/png");   
-        
- 
-        // Saving it locally automatically
-        let link = document.createElement("a");
-        link.setAttribute('download', "bowapJS" + Date.now())
-        link.href= imageObject.src
-        link.click()               
-     
+function saveCanvas() {
+
+    var imageObject = new Image();
+    imageObject.src = canvas.toDataURL("image/png");
+
+
+    // Saving it locally automatically
+    let link = document.createElement("a");
+    link.setAttribute('download', "bowapJS" + Date.now())
+    link.href = imageObject.src
+    link.click()
+}
+
+function shareParams() {
+    let copyText = `${window.location.href.split('?')[0]}?p1=${tailCount}&p2=${radiusDistance}&p3=${speedMult}&p4=${spinRotat}`;
+    
+    navigator.clipboard.writeText(copyText);
+    alert("Link copied to the clipboard")
+    
 }
