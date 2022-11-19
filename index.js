@@ -219,7 +219,7 @@ function handleRestart() {
     speedMult = document.getElementById("speedMult").value;
     spinRotat = document.getElementById("spinRotat").value;
 
-    window.history.pushState("","",`${window.location.href.split('?')[0]}?p1=${tailCount}&p2=${radiusDistance}&p3=${speedMult}&p4=${spinRotat}`);
+    window.history.replaceState("","",`${window.location.href.split('?')[0]}?p1=${tailCount}&p2=${radiusDistance}&p3=${speedMult}&p4=${spinRotat}`);
 
 
     gaeColor = document.getElementById("gaeInput").checked;
